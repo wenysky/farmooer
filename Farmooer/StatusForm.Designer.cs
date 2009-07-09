@@ -386,7 +386,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(475, 236);
+            this.ClientSize = new System.Drawing.Size(973, 236);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -425,6 +425,7 @@
             this.Name = "StatusForm";
             this.Text = "StatusForm";
             this.Load += new System.EventHandler(this.StatusForm_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StatusForm_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.pbx)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
