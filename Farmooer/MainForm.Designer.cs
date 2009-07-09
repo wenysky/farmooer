@@ -1,6 +1,6 @@
-﻿namespace Farmooer
+﻿namespace Natsuhime.Farmooer
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -40,6 +40,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnTest = new System.Windows.Forms.Button();
+            this.btnShowStatusForm = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -57,7 +58,7 @@
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(581, 1);
+            this.btnStart.Location = new System.Drawing.Point(503, 1);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(75, 23);
             this.btnStart.TabIndex = 1;
@@ -120,7 +121,7 @@
             // 
             // btnDebug
             // 
-            this.btnDebug.Location = new System.Drawing.Point(500, 1);
+            this.btnDebug.Location = new System.Drawing.Point(422, 1);
             this.btnDebug.Name = "btnDebug";
             this.btnDebug.Size = new System.Drawing.Size(75, 23);
             this.btnDebug.TabIndex = 4;
@@ -131,9 +132,7 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(420, 5);
+            this.checkBox1.Location = new System.Drawing.Point(342, 5);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(74, 17);
             this.checkBox1.TabIndex = 5;
@@ -157,6 +156,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btnShowStatusForm);
             this.panel1.Controls.Add(this.btnTest);
             this.panel1.Controls.Add(this.textBox1);
             this.panel1.Controls.Add(this.checkBox1);
@@ -170,7 +170,7 @@
             // 
             // btnTest
             // 
-            this.btnTest.Location = new System.Drawing.Point(339, 1);
+            this.btnTest.Location = new System.Drawing.Point(261, 1);
             this.btnTest.Name = "btnTest";
             this.btnTest.Size = new System.Drawing.Size(75, 23);
             this.btnTest.TabIndex = 6;
@@ -178,13 +178,23 @@
             this.btnTest.UseVisualStyleBackColor = true;
             this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
-            // Form1
+            // btnShowStatusForm
+            // 
+            this.btnShowStatusForm.Location = new System.Drawing.Point(584, 1);
+            this.btnShowStatusForm.Name = "btnShowStatusForm";
+            this.btnShowStatusForm.Size = new System.Drawing.Size(75, 23);
+            this.btnShowStatusForm.TabIndex = 7;
+            this.btnShowStatusForm.Text = "显示状态";
+            this.btnShowStatusForm.UseVisualStyleBackColor = true;
+            this.btnShowStatusForm.Click += new System.EventHandler(this.btnShowStatusForm_Click);
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(665, 443);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Form1";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -211,6 +221,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnTest;
+        private System.Windows.Forms.Button btnShowStatusForm;
     }
 }
 

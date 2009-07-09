@@ -1,4 +1,4 @@
-﻿namespace Farmooer
+﻿namespace Natsuhime.Farmooer
 {
     partial class InputForm
     {

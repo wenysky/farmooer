@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Farmooer
+namespace Natsuhime.Farmooer
 {
     public partial class InputForm : Form
     {
