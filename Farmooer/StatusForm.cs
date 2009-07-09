@@ -28,17 +28,20 @@ namespace Natsuhime.Farmooer
 
         public void InitStatusData(CurrentStatus status)
         {
-            this.lblServerTime.Text = Utils.UnixTimestampToDateTime(status.serverTime.time).ToString("yy-MM-dd HH:mm:ss");
-            this.lblWeather.Text = Utils.UnicodeCharToChineseChar(status.weather.weatherDesc) + "[" + status.weather.weatherId + "]";
+            if (status != null)
+            {
+                this.lblServerTime.Text = Utils.UnixTimestampToDateTime(status.serverTime.time).ToString("yy-MM-dd HH:mm:ss");
+                this.lblWeather.Text = Utils.UnicodeCharToChineseChar(status.weather.weatherDesc) + "[" + status.weather.weatherId + "]";
 
-            this.lblUID.Text = status.user.uId;
-            this.lblUserName.Text = status.user.userName;
-            this.lblMoney.Text = status.user.money.ToString();
-            this.lblExp.Text = status.user.exp.ToString();
-            this.pbx.ImageLocation = status.user.headPic;
+                this.lblUID.Text = status.user.uId;
+                this.lblUserName.Text = status.user.userName;
+                this.lblMoney.Text = status.user.money.ToString();
+                this.lblExp.Text = status.user.exp.ToString();
+                this.pbx.ImageLocation = status.user.headPic;
 
-            this.cmbbxFarmList.DataSource = status.farmlandStatus;
-            this.cmbbxFarmList.DisplayMember = "a";            
+                this.cmbbxFarmList.DataSource = status.farmlandStatus;
+                this.cmbbxFarmList.DisplayMember = "a";
+            }
         }
 
         private void cmbbxFarmList_SelectedIndexChanged(object sender, EventArgs e)
@@ -58,9 +61,29 @@ namespace Natsuhime.Farmooer
             this.lblk.Text = fs.k.ToString();
             this.lbll.Text = fs.l.ToString();
             this.lblm.Text = fs.m.ToString();
-            this.lbln.Text = fs.n.ToString();
+            if (fs.n.Length > 0)
+            {
+                foreach (int value in fs.n)
+                {
+                    this.lbln.Text += value.ToString();
+                }
+            }
+            else
+            {
+                this.lbln.Text = "空";
+            }
             this.lblo.Text = fs.o.ToString();
-            this.lblp.Text = fs.p.ToString();
+            if (fs.p.Length > 0)
+            {
+                foreach (int value in fs.p)
+                {
+                    this.lblp.Text += value.ToString();
+                }
+            }
+            else
+            {
+                this.lblp.Text = "空";
+            }
             this.lblq.Text = Utils.UnixTimestampToDateTime(fs.q).ToString("MM-dd HH:mm:ss");
             this.lblr.Text = Utils.UnixTimestampToDateTime(fs.r).ToString("MM-dd HH:mm:ss");
             this.lbls.Text = fs.s.ToString();
