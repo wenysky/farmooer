@@ -40,6 +40,9 @@ namespace Natsuhime.Farmooer
                 this.lblExp.Text = status.user.exp.ToString();
                 this.pbx.ImageLocation = status.user.headPic;
 
+                this.dtgvMain.DataSource = status.farmlandStatus;
+
+
                 this.cmbbxFarmList.DataSource = status.farmlandStatus;
                 this.cmbbxFarmList.DisplayMember = "a";
             }
@@ -78,9 +81,9 @@ namespace Natsuhime.Farmooer
             if (fs.p.Count > 0)
             {
                 this.lblp.Text = string.Empty;
-                foreach (KeyValuePair<string, int> info in fs.p)
+                foreach (KeyValuePair<string, int[]> info in fs.p)
                 {
-                    this.lblp.Text += info.Key + ":" + info.Value.ToString();
+                    this.lblp.Text += info.Key + ":" + info.Value[0].ToString();
                 }
             }
             else

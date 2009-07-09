@@ -51,9 +51,11 @@
       <DependentUpon>DisplayForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Entities\CurrentStatus.cs" />
+    <Compile Include="Entities\EnumOperation.cs" />
     <Compile Include="Entities\FarmItem.cs" />
     <Compile Include="Entities\FarmItems.cs" />
     <Compile Include="Entities\FarmlandStatus.cs" />
+    <Compile Include="Entities\HarvestInfo.cs" />
     <Compile Include="Entities\ServerTime.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\Weather.cs" />
@@ -118,6 +120,9 @@
       <Project>{67268E9E-AA3B-4D9E-956A-158922DA6B79}</Project>
       <Name>DeepinSummer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="HTMLPage1.htm" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

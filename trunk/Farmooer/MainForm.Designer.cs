@@ -39,8 +39,8 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnTest = new System.Windows.Forms.Button();
             this.btnShowStatusForm = new System.Windows.Forms.Button();
+            this.btnTest = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -73,7 +73,7 @@
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
             this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox2.Size = new System.Drawing.Size(645, 372);
+            this.textBox2.Size = new System.Drawing.Size(914, 191);
             this.textBox2.TabIndex = 2;
             // 
             // tabControl1
@@ -84,7 +84,7 @@
             this.tabControl1.Location = new System.Drawing.Point(3, 36);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(659, 404);
+            this.tabControl1.Size = new System.Drawing.Size(928, 223);
             this.tabControl1.TabIndex = 3;
             // 
             // tabPage1
@@ -93,7 +93,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(651, 378);
+            this.tabPage1.Size = new System.Drawing.Size(920, 197);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -151,7 +151,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(665, 443);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(934, 262);
             this.tableLayoutPanel1.TabIndex = 6;
             // 
             // panel1
@@ -165,18 +165,8 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(659, 27);
+            this.panel1.Size = new System.Drawing.Size(928, 27);
             this.panel1.TabIndex = 0;
-            // 
-            // btnTest
-            // 
-            this.btnTest.Location = new System.Drawing.Point(261, 1);
-            this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(75, 23);
-            this.btnTest.TabIndex = 6;
-            this.btnTest.Text = "TEST";
-            this.btnTest.UseVisualStyleBackColor = true;
-            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
             // btnShowStatusForm
             // 
@@ -188,11 +178,21 @@
             this.btnShowStatusForm.UseVisualStyleBackColor = true;
             this.btnShowStatusForm.Click += new System.EventHandler(this.btnShowStatusForm_Click);
             // 
+            // btnTest
+            // 
+            this.btnTest.Location = new System.Drawing.Point(261, 1);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(75, 23);
+            this.btnTest.TabIndex = 6;
+            this.btnTest.Text = "TEST";
+            this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(665, 443);
+            this.ClientSize = new System.Drawing.Size(934, 262);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "MainForm";
             this.Text = "Form1";
