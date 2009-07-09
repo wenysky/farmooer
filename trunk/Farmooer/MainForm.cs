@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Natsuhime;
 using System.Net;
 using Newtonsoft.Json;
+using Natsuhime.Farmooer.Entities;
 
 namespace Natsuhime.Farmooer
 {
@@ -29,7 +30,6 @@ namespace Natsuhime.Farmooer
             httper.RequestStringCompleted += new NewHttper.RequestStringCompleteEventHandler(httper_RequestStringCompleted);
 
             sf = new StatusForm();
-            sf.Show();
         }
 
         void wbMain_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -50,7 +50,7 @@ namespace Natsuhime.Farmooer
             if (e.Url.AbsolutePath == "/api.php")
             {
                 RefeshCurrentStatusCompleted();
-                return; 
+                return;
 
                 //url = string.Format(
                 //    "http://my.hf.fminutes.com/api.php?mod=user&act=run&farmKey={0}&farmTime={1}&inuId=",
@@ -94,7 +94,7 @@ namespace Natsuhime.Farmooer
                 UnixStamp()
                 );
             wbMain.Navigate(url);
-            textBox2.Text += "正在获取状态数据..."+Environment.NewLine;
+            textBox2.Text += "正在获取状态数据..." + Environment.NewLine;
         }
 
         void UpdateStatusForm()
@@ -138,7 +138,9 @@ namespace Natsuhime.Farmooer
         private void btnShowStatusForm_Click(object sender, EventArgs e)
         {
             this.UpdateStatusForm();
+            sf.Location = new Point(this.Location.X + this.Width, this.Location.Y);
             sf.Show();
+            sf.Focus();
         }
         private void btnDebug_Click(object sender, EventArgs e)
         {
@@ -156,6 +158,13 @@ namespace Natsuhime.Farmooer
         }
         private void btnTest_Click(object sender, EventArgs e)
         {
+            //Dictionary<string, int> aaa = new Dictionary<string, int>();
+            //aaa.Add("cc", 111);
+            //aaa.Add("ccc", 11111);
+            //string a = JavaScriptConvert.SerializeObject(aaa);
+
+            //a = "[]";
+            //aaa = (Dictionary<string, int>)JavaScriptConvert.DeserializeObject(a, typeof(Dictionary<string, int>));
             BeginRefeshCurrentStatus();
         }
 
@@ -171,106 +180,11 @@ namespace Natsuhime.Farmooer
         static CurrentStatus GetCurrentStatus(string returnMsg)
         {
             CurrentStatus cs;
-            string a = returnMsg.Replace("\"1\":", "\"a\":").Replace("\"2\":", "\"b\":").Replace("\"3\":", "\"c\":").Replace("\"4\":", "\"d\":").Replace("\\u", "\\\\u");
+            string a = returnMsg.Replace("\"1\":", "\"a\":").Replace("\"2\":", "\"b\":").Replace("\"3\":", "\"c\":").Replace("\"4\":", "\"d\":").Replace("\\u", "\\\\u").Replace("\"n\":[]", "\"n\":{}").Replace("\"p\":[]", "\"p\":{}");
             object aa = JavaScriptConvert.DeserializeObject(a, typeof(CurrentStatus));
 
             cs = aa as CurrentStatus;
             return cs;
         }
-    }
-
-    public class CurrentStatus
-    {
-        public FarmlandStatus[] farmlandStatus { get; set; }
-        public FarmItems items { get; set; }
-        public int exp { get; set; }
-        public Weather weather { get; set; }
-        public ServerTime serverTime { get; set; }
-        public User user { get; set; }
-        public int a { get; set; }
-        public int b { get; set; }
-        public int c { get; set; }
-    }
-
-    public class FarmlandStatus
-    {
-        public int a { get; set; }
-        /// <summary>
-        /// 成长阶段(6:已成熟;7:已收获;0:空地)
-        /// </summary>
-        public int b { get; set; }
-        public int c { get; set; }
-        public int d { get; set; }
-        public int e { get; set; }
-        public int f { get; set; }
-        public int g { get; set; }
-        public int h { get; set; }
-        public int i { get; set; }
-        public int j { get; set; }
-        /// <summary>
-        /// 产量
-        /// </summary>
-        public int k { get; set; }
-        /// <summary>
-        /// 健康度
-        /// </summary>
-        public int l { get; set; }
-        /// <summary>
-        /// 产量
-        /// </summary>
-        public int m { get; set; }
-        public int[] n { get; set; }
-        public int o { get; set; }
-        public int[] p { get; set; }
-        /// <summary>
-        /// 成熟时间
-        /// </summary>
-        public long q { get; set; }
-        /// <summary>
-        /// 成熟时间?
-        /// </summary>
-        public long r { get; set; }
-        public int s { get; set; }
-        public int t { get; set; }
-        public int u { get; set; }
-    }
-
-
-    public class FarmItems
-    {
-        public FarmItem a { get; set; }
-        public FarmItem b { get; set; }
-        public FarmItem2 c { get; set; }
-        public FarmItem2 d { get; set; }
-    }
-
-    public class FarmItem
-    {
-        public int itemId { get; set; }
-    }
-    public class FarmItem2
-    {
-        public string itemId { get; set; }
-    }
-
-    public class Weather
-    {
-        public int weatherId { get; set; }
-        public string weatherDesc { get; set; }
-    }
-
-    public class ServerTime
-    {
-        public long time { get; set; }
-    }
-
-    public class User
-    {
-        public string uId { get; set; }
-        public string userName { get; set; }
-        public int money { get; set; }
-        public string FB { get; set; }
-        public string headPic { get; set; }
-        public int exp { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Natsuhime.Common;
+using Natsuhime.Farmooer.Entities;
 
 namespace Natsuhime.Farmooer
 {
@@ -61,11 +62,12 @@ namespace Natsuhime.Farmooer
             this.lblk.Text = fs.k.ToString();
             this.lbll.Text = fs.l.ToString();
             this.lblm.Text = fs.m.ToString();
-            if (fs.n.Length > 0)
+            if (fs.n.Count > 0)
             {
-                foreach (int value in fs.n)
+                this.lbln.Text = string.Empty;
+                foreach (KeyValuePair<string, int> info in fs.n)
                 {
-                    this.lbln.Text += value.ToString();
+                    this.lbln.Text += info.Key + ":" + info.Value.ToString();
                 }
             }
             else
@@ -73,11 +75,12 @@ namespace Natsuhime.Farmooer
                 this.lbln.Text = "空";
             }
             this.lblo.Text = fs.o.ToString();
-            if (fs.p.Length > 0)
+            if (fs.p.Count > 0)
             {
-                foreach (int value in fs.p)
+                this.lblp.Text = string.Empty;
+                foreach (KeyValuePair<string, int> info in fs.p)
                 {
-                    this.lblp.Text += value.ToString();
+                    this.lblp.Text += info.Key + ":" + info.Value.ToString();
                 }
             }
             else
@@ -89,6 +92,12 @@ namespace Natsuhime.Farmooer
             this.lbls.Text = fs.s.ToString();
             this.lblt.Text = fs.t.ToString();
             this.lblu.Text = fs.u.ToString();
+        }
+
+        private void StatusForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+            this.Hide();
         }
     }
 }
