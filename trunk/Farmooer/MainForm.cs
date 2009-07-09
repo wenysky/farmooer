@@ -9,14 +9,15 @@ using Natsuhime;
 using System.Net;
 using Newtonsoft.Json;
 
-namespace Farmooer
+namespace Natsuhime.Farmooer
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-
         NewHttper httper;
         CookieContainer cookie;
-        public Form1()
+        StatusForm sf;
+        CurrentStatus cs;
+        public MainForm()
         {
             InitializeComponent();
             cookie = new CookieContainer();
@@ -26,28 +27,13 @@ namespace Farmooer
             httper.Charset = "UTF-8";
             httper.RequestDataCompleted += new NewHttper.RequestDataCompletedEventHandler(httper_RequestDataCompleted);
             httper.RequestStringCompleted += new NewHttper.RequestStringCompleteEventHandler(httper_RequestStringCompleted);
+
+            sf = new StatusForm();
+            sf.Show();
         }
 
         void wbMain_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            //string[] wbCookie = wbMain.Document.Cookie.Split(';');
-            //foreach (string str in wbCookie)
-            //{
-            //    string[] nameValue = str.Split(';');
-            //    Cookie ck = new Cookie(nameValue[0].Trim(), nameValue[1].Trim());
-            //    ck.Domain = wbMain.Document.Domain;
-            //    cookie.Add(ck);
-            //}         
-
-            //if (true)
-            //{
-            //    wbMain.Navigate(
-            //        string.Format(
-            //        "http://apps.manyou.com/1021978/?my_uchId=996169&my_sId=1000174&my_prefix=http://u.discuz.net/home/&my_suffix=/&my_current=http://u.discuz.net/home/userapp.php%3Fid%3D1021978%26my_suffix%3DLw%253D%253D&my_extra=&my_ts=1246092185&my_appVersion=0&my_sig=5d9e3200bfeaf781742a33df4bd2a4f4",
-            //        UnixStamp()
-            //        )
-            //        );
-            //}
             if (checkBox1.Checked)
             {
                 DisplayForm d1 = new DisplayForm(e.Url + Environment.NewLine + this.wbMain.DocumentText);
@@ -58,6 +44,59 @@ namespace Farmooer
                 DisplayForm d2 = new DisplayForm(e.Url + Environment.NewLine + this.wbMain.Document.Cookie);
                 d2.Text = e.Url.ToString();
                 d2.Show();
+            }
+            string url = string.Empty;
+
+            if (e.Url.AbsolutePath == "/api.php")
+            {
+                cs = GetCurrentStatus(this.wbMain.DocumentText);
+                UpdateStatusForm();
+                return; 
+
+                //url = string.Format(
+                //    "http://my.hf.fminutes.com/api.php?mod=user&act=run&farmKey={0}&farmTime={1}&inuId=",
+                //    textBox1.Text,
+                //    UnixStamp()
+                //    );
+                //httper.Url = url;
+                //SetHttperCookieFromWB(wbMain.Document.Cookie.Split(';'), wbMain.Document.Domain);
+                //httper.RequestStringAsync(EnumRequestMethod.GET);
+            }
+            else if (e.Url.AbsolutePath == "")
+            {
+            }
+            else if (e.Url.AbsolutePath == "/home/userapp.php")
+            {
+                url = string.Format(
+                    "http://my.hf.fminutes.com/api.php?mod=user&act=run&farmKey={0}&farmTime={1}&inuId=",
+                    textBox1.Text,
+                    UnixStamp()
+                    );
+            }
+            else
+            {
+                return;
+            }
+            if (url != string.Empty)
+            {
+                wbMain.Navigate(url);
+            }
+        }
+
+        void UpdateStatusForm()
+        {
+            sf.InitStatusData(cs);
+        }
+
+        private void SetHttperCookieFromWB(string[] wbCookie, string domain)
+        {
+            foreach (string str in wbCookie)
+            {
+                string[] nameValue = str.Split('=');
+                Cookie ck = new Cookie(nameValue[0].Trim(), nameValue[1].Trim());
+                ck.Domain = domain;
+                httper.Cookie = new CookieContainer();
+                httper.Cookie.Add(ck);
             }
         }
 
@@ -82,16 +121,11 @@ namespace Farmooer
                 );
              */
         }
-
-        private UInt32 UnixStamp()
+        private void btnShowStatusForm_Click(object sender, EventArgs e)
         {
-            DateTime timeStamp = new DateTime(1970, 1, 1);  //得到1970年的时间戳
-            long a = (DateTime.UtcNow.Ticks - timeStamp.Ticks) / 10000000;  //注意这里有时区问题，用now就要减掉8个小时
-
-            TimeSpan ts = DateTime.Now - TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
-            return Convert.ToUInt32(ts.TotalSeconds);
+            this.UpdateStatusForm();
+            sf.Show();
         }
-
         private void btnDebug_Click(object sender, EventArgs e)
         {
             InputForm ipt = new InputForm();
@@ -106,22 +140,35 @@ namespace Farmooer
             //    );
             //httper.RequestStringAsync(EnumRequestMethod.GET);
         }
-
         private void btnTest_Click(object sender, EventArgs e)
         {
+            CurrentStatus cs;
             InputForm ipf = new InputForm();
             if (ipf.ShowDialog() == DialogResult.OK)
             {
-                string a = ipf.InputString.Replace("\"1\":", "\"a\":").Replace("\"2\":", "\"b\":").Replace("\"3\":", "\"c\":").Replace("\"4\":", "\"d\":").Replace("\\u","\\\\u");
-                object aa = JavaScriptConvert.DeserializeObject(a, typeof(CurrentStatus));
-
-                CurrentStatus cs = aa as CurrentStatus;
-
-
-
-                //KeyValuePair<object, object> cc = (KeyValuePair<object, object>)aa;
+                string returnMsg = ipf.InputString;
+                cs = GetCurrentStatus(returnMsg);
             }
 
+        }
+
+        private UInt32 UnixStamp()
+        {
+            DateTime timeStamp = new DateTime(1970, 1, 1);  //得到1970年的时间戳
+            long a = (DateTime.UtcNow.Ticks - timeStamp.Ticks) / 10000000;  //注意这里有时区问题，用now就要减掉8个小时
+
+            TimeSpan ts = DateTime.Now - TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+            return Convert.ToUInt32(ts.TotalSeconds);
+        }
+
+        static CurrentStatus GetCurrentStatus(string returnMsg)
+        {
+            CurrentStatus cs;
+            string a = returnMsg.Replace("\"1\":", "\"a\":").Replace("\"2\":", "\"b\":").Replace("\"3\":", "\"c\":").Replace("\"4\":", "\"d\":").Replace("\\u", "\\\\u");
+            object aa = JavaScriptConvert.DeserializeObject(a, typeof(CurrentStatus));
+
+            cs = aa as CurrentStatus;
+            return cs;
         }
     }
 
@@ -156,8 +203,8 @@ namespace Farmooer
         public int[] n { get; set; }
         public int o { get; set; }
         public int[] p { get; set; }
-        public int q { get; set; }
-        public int r { get; set; }
+        public long q { get; set; }
+        public long r { get; set; }
         public int s { get; set; }
         public int t { get; set; }
         public int u { get; set; }
@@ -189,7 +236,7 @@ namespace Farmooer
 
     public class ServerTime
     {
-        public UInt32 time { get; set; }
+        public long time { get; set; }
     }
 
     public class User
