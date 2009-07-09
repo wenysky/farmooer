@@ -6,6 +6,9 @@ namespace Natsuhime.Farmooer.Entities
 {
     public class FarmlandStatus
     {
+        /// <summary>
+        /// 作物(2白萝;3红萝;4玉米)
+        /// </summary>
         public int a { get; set; }
         /// <summary>
         /// 成长阶段(6:已成熟;7:已收获;0:空地)
@@ -16,6 +19,9 @@ namespace Natsuhime.Farmooer.Entities
         public int e { get; set; }
         public int f { get; set; }
         public int g { get; set; }
+        /// <summary>
+        /// 健康度?(不健康0;健康1)
+        /// </summary>
         public int h { get; set; }
         public int i { get; set; }
         public int j { get; set; }
@@ -23,9 +29,6 @@ namespace Natsuhime.Farmooer.Entities
         /// 产量
         /// </summary>
         public int k { get; set; }
-        /// <summary>
-        /// 健康度
-        /// </summary>
         public int l { get; set; }
         /// <summary>
         /// 产量
@@ -36,7 +39,10 @@ namespace Natsuhime.Farmooer.Entities
         /// </summary>
         public Dictionary<string, int> n { get; set; }
         public int o { get; set; }
-        public Dictionary<string, int> p { get; set; }
+        /// <summary>
+        /// 灾害状态("p":{"1247125439":[3]}  应该是时间和id)
+        /// </summary>
+        public Dictionary<string, int[]> p { get; set; }
         /// <summary>
         /// 成熟时间
         /// </summary>

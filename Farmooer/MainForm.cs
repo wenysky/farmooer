@@ -18,6 +18,9 @@ namespace Natsuhime.Farmooer
         CookieContainer cookie;
         StatusForm sf;
         CurrentStatus cs;
+        List<int> harvestList;
+
+        EnumOperation currentOperation;
         public MainForm()
         {
             InitializeComponent();
@@ -30,7 +33,14 @@ namespace Natsuhime.Farmooer
             httper.RequestStringCompleted += new NewHttper.RequestStringCompleteEventHandler(httper_RequestStringCompleted);
 
             sf = new StatusForm();
+            harvestList = new List<int>();
+            this.currentOperation = EnumOperation.None;
         }
+        void ShowMessage(string str)
+        {
+            textBox2.Text += str + Environment.NewLine;
+        }
+
 
         void wbMain_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
@@ -47,47 +57,46 @@ namespace Natsuhime.Farmooer
             }
             string url = string.Empty;
 
-            if (e.Url.AbsolutePath == "/api.php")
+            if (e.Url.AbsolutePath == "/api.php" && this.currentOperation == EnumOperation.CheckFarmStatus)
             {
                 RefeshCurrentStatusCompleted();
-                return;
-
-                //url = string.Format(
-                //    "http://my.hf.fminutes.com/api.php?mod=user&act=run&farmKey={0}&farmTime={1}&inuId=",
-                //    textBox1.Text,
-                //    UnixStamp()
-                //    );
-                //httper.Url = url;
-                //SetHttperCookieFromWB(wbMain.Document.Cookie.Split(';'), wbMain.Document.Domain);
-                //httper.RequestStringAsync(EnumRequestMethod.GET);
             }
-            else if (e.Url.AbsolutePath == "")
+            else if (e.Url.AbsolutePath == "/api.php" && this.currentOperation == EnumOperation.Harvest)
             {
+                HarvestCompleted();
             }
-            else if (e.Url.AbsolutePath == "/home/userapp.php")
+            else if (e.Url.AbsolutePath == "/home/userapp.php" && this.currentOperation == EnumOperation.InitApp)
             {
-                BeginRefeshCurrentStatus();
-                return;
+                InitAppCompleted();
+            }
+            else if (this.currentOperation == EnumOperation.PreHarvest)
+            {
+                Harvest2();
             }
             else
             {
                 return;
             }
-            if (url != string.Empty)
-            {
-                wbMain.Navigate(url);
-            }
         }
 
-        private void RefeshCurrentStatusCompleted()
+
+        void BeginInitApp()
         {
-            cs = GetCurrentStatus(this.wbMain.DocumentText);
-            UpdateStatusForm();
-            textBox2.Text += "获取状态数据完成" + Environment.NewLine;
+            this.currentOperation = EnumOperation.InitApp;
+            ShowMessage("开始引导应用...");
+            wbMain.Navigate("http://u.discuz.net/home/userapp.php?id=1021978");
+        }
+        void InitAppCompleted()
+        {
+            this.currentOperation = EnumOperation.None;
+            ShowMessage("引导应用完成!");
+            BeginRefeshCurrentStatus();
         }
 
         void BeginRefeshCurrentStatus()
         {
+            this.currentOperation = EnumOperation.CheckFarmStatus;
+            ShowMessage("开始刷新数据...");
             string url = string.Format(
                 "http://my.hf.fminutes.com/api.php?mod=user&act=run&farmKey={0}&farmTime={1}&inuId=",
                 textBox1.Text,
@@ -96,10 +105,96 @@ namespace Natsuhime.Farmooer
             wbMain.Navigate(url);
             textBox2.Text += "正在获取状态数据..." + Environment.NewLine;
         }
+        private void RefeshCurrentStatusCompleted()
+        {
+            this.currentOperation = EnumOperation.None;
+            ShowMessage("刷新数据完成!");
+            cs = GetCurrentStatus(this.wbMain.DocumentText);
+            UpdateStatusForm();
+
+            ShowMessage("开始检查收获...");
+            for (int i = 0; i < this.cs.farmlandStatus.Length; i++)
+            {
+                if (cs.farmlandStatus[i].b == 6)
+                {
+                    this.harvestList.Add(i);
+                }
+            }
+            if (this.harvestList.Count > 0)
+            {
+                ShowMessage(this.harvestList.Count + "块等待收获!");
+                BeginHarvest(this.harvestList[0]);
+            }
+            else
+            {
+                ShowMessage("没有需要收获!");
+            }
+        }
+
+        void BeginHarvest(int placeid)
+        {
+            this.currentOperation = EnumOperation.PreHarvest;
+            string url = string.Format(
+                "http://my.hf.fminutes.com/api.php?mod=farmlandstatus&act=harvest&farmKey={0}&farmTime={1}&inuId=",
+                textBox1.Text,
+                UnixStamp()
+                );
+            StringBuilder sbHtml = new StringBuilder();
+            sbHtml.Append(string.Format("<form action=\"{0}\" method=\"post\">", url));
+            sbHtml.Append(string.Format("<input id=\"ownerId\" name=\"ownerId\" value=\"{0}\" type=\"text\" />", cs.user.uId));
+            sbHtml.Append(string.Format("<input id=\"place\" name=\"place\" value=\"{0}\" type=\"text\" />", placeid));
+            sbHtml.Append("<input id=\"sub\" name=\"sub\" type=\"submit\" />");
+            sbHtml.Append("</form>");
+            this.wbMain.DocumentText = sbHtml.ToString();
+
+            ShowMessage("准备收获第" + placeid + "块...");
+        }
+        void Harvest2()
+        {
+            this.currentOperation = EnumOperation.Harvest;
+            HtmlElement htmlbtnSub = this.wbMain.Document.Body.All["sub"];
+            htmlbtnSub.InvokeMember("click");
+            ShowMessage("正在收获...");
+        }
+        void HarvestCompleted()
+        {
+            this.currentOperation = EnumOperation.None;
+            HarvestInfo hi = null;
+            try
+            {
+                hi = (HarvestInfo)JavaScriptConvert.DeserializeObject(this.wbMain.DocumentText, typeof(HarvestInfo));
+            }
+            catch (Exception ex)
+            {
+                ShowMessage(ex.Message);
+            }
+            if (hi != null)
+            {
+                ShowMessage("[farmlandIndex]" + hi.farmlandIndex + ":[code]" + hi.code + ":[poptype]" + hi.poptype + ":[direction]" + hi.direction + ":[harvest]" + hi.harvest);
+                ShowMessage("完毕!");
+            }
+            else
+            {
+                ShowMessage("意外完毕!" + this.wbMain.DocumentText);
+            }
+            this.harvestList.RemoveAt(0);
+
+            if (this.harvestList.Count > 0)
+            {
+                BeginHarvest(this.harvestList[0]);
+            }
+            else
+            {
+                ShowMessage("所有完毕!");
+            }
+        }
+
+
 
         void UpdateStatusForm()
         {
             sf.InitStatusData(cs);
+            ShowMessage("刷新状态窗体完成!");
         }
 
         private void SetHttperCookieFromWB(string[] wbCookie, string domain)
@@ -113,19 +208,17 @@ namespace Natsuhime.Farmooer
                 httper.Cookie.Add(ck);
             }
         }
-
         void httper_RequestStringCompleted(object sender, RequestStringCompletedEventArgs e)
         {
 
         }
-
         void httper_RequestDataCompleted(object sender, RequestDataCompletedEventArgs e)
         {
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            wbMain.Navigate("http://u.discuz.net/home/userapp.php?id=1021978");
+            BeginInitApp();
             /*
             wbMain.Navigate(
                 string.Format(
@@ -138,7 +231,7 @@ namespace Natsuhime.Farmooer
         private void btnShowStatusForm_Click(object sender, EventArgs e)
         {
             this.UpdateStatusForm();
-            sf.Location = new Point(this.Location.X + this.Width, this.Location.Y);
+            sf.Location = new Point(this.Location.X, this.Location.Y + this.Height);
             sf.Show();
             sf.Focus();
         }
