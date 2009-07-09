@@ -49,8 +49,7 @@ namespace Natsuhime.Farmooer
 
             if (e.Url.AbsolutePath == "/api.php")
             {
-                cs = GetCurrentStatus(this.wbMain.DocumentText);
-                UpdateStatusForm();
+                RefeshCurrentStatusCompleted();
                 return; 
 
                 //url = string.Format(
@@ -67,11 +66,8 @@ namespace Natsuhime.Farmooer
             }
             else if (e.Url.AbsolutePath == "/home/userapp.php")
             {
-                url = string.Format(
-                    "http://my.hf.fminutes.com/api.php?mod=user&act=run&farmKey={0}&farmTime={1}&inuId=",
-                    textBox1.Text,
-                    UnixStamp()
-                    );
+                BeginRefeshCurrentStatus();
+                return;
             }
             else
             {
@@ -81,6 +77,24 @@ namespace Natsuhime.Farmooer
             {
                 wbMain.Navigate(url);
             }
+        }
+
+        private void RefeshCurrentStatusCompleted()
+        {
+            cs = GetCurrentStatus(this.wbMain.DocumentText);
+            UpdateStatusForm();
+            textBox2.Text += "获取状态数据完成" + Environment.NewLine;
+        }
+
+        void BeginRefeshCurrentStatus()
+        {
+            string url = string.Format(
+                "http://my.hf.fminutes.com/api.php?mod=user&act=run&farmKey={0}&farmTime={1}&inuId=",
+                textBox1.Text,
+                UnixStamp()
+                );
+            wbMain.Navigate(url);
+            textBox2.Text += "正在获取状态数据..."+Environment.NewLine;
         }
 
         void UpdateStatusForm()
@@ -142,14 +156,7 @@ namespace Natsuhime.Farmooer
         }
         private void btnTest_Click(object sender, EventArgs e)
         {
-            CurrentStatus cs;
-            InputForm ipf = new InputForm();
-            if (ipf.ShowDialog() == DialogResult.OK)
-            {
-                string returnMsg = ipf.InputString;
-                cs = GetCurrentStatus(returnMsg);
-            }
-
+            BeginRefeshCurrentStatus();
         }
 
         private UInt32 UnixStamp()
@@ -188,6 +195,9 @@ namespace Natsuhime.Farmooer
     public class FarmlandStatus
     {
         public int a { get; set; }
+        /// <summary>
+        /// 成长阶段(6:已成熟;7:已收获;0:空地)
+        /// </summary>
         public int b { get; set; }
         public int c { get; set; }
         public int d { get; set; }
@@ -197,13 +207,28 @@ namespace Natsuhime.Farmooer
         public int h { get; set; }
         public int i { get; set; }
         public int j { get; set; }
+        /// <summary>
+        /// 产量
+        /// </summary>
         public int k { get; set; }
+        /// <summary>
+        /// 健康度
+        /// </summary>
         public int l { get; set; }
+        /// <summary>
+        /// 产量
+        /// </summary>
         public int m { get; set; }
         public int[] n { get; set; }
         public int o { get; set; }
         public int[] p { get; set; }
+        /// <summary>
+        /// 成熟时间
+        /// </summary>
         public long q { get; set; }
+        /// <summary>
+        /// 成熟时间?
+        /// </summary>
         public long r { get; set; }
         public int s { get; set; }
         public int t { get; set; }
