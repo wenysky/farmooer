@@ -19,8 +19,17 @@ namespace Natsuhime.Farmooer
         StatusForm sf;
         CurrentStatus cs;
         List<int> harvestList;
+        Timer timer;
 
         EnumOperation currentOperation;
+
+        public string FarmKey
+        {
+            get
+            {
+                return Guid.NewGuid().ToString("N");
+            }
+        }
         public MainForm()
         {
             InitializeComponent();
@@ -32,9 +41,26 @@ namespace Natsuhime.Farmooer
             httper.RequestDataCompleted += new NewHttper.RequestDataCompletedEventHandler(httper_RequestDataCompleted);
             httper.RequestStringCompleted += new NewHttper.RequestStringCompleteEventHandler(httper_RequestStringCompleted);
 
+            this.timer = new Timer();
+            this.timer.Interval = 20000;
+            this.timer.Tick += new EventHandler(timer_Tick);
+            this.timer.Stop();
+
             sf = new StatusForm();
             harvestList = new List<int>();
             this.currentOperation = EnumOperation.None;
+        }
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+            if (this.currentOperation == EnumOperation.None)
+            {
+                BeginRefeshCurrentStatus();
+            }
+            else
+            {
+                ShowMessage(this.currentOperation.ToString() + "正在执行中!!!");
+            }
         }
         void ShowMessage(string str)
         {
@@ -99,7 +125,7 @@ namespace Natsuhime.Farmooer
             ShowMessage("开始刷新数据...");
             string url = string.Format(
                 "http://my.hf.fminutes.com/api.php?mod=user&act=run&farmKey={0}&farmTime={1}&inuId=",
-                textBox1.Text,
+                FarmKey,
                 UnixStamp()
                 );
             wbMain.Navigate(url);
@@ -136,7 +162,7 @@ namespace Natsuhime.Farmooer
             this.currentOperation = EnumOperation.PreHarvest;
             string url = string.Format(
                 "http://my.hf.fminutes.com/api.php?mod=farmlandstatus&act=harvest&farmKey={0}&farmTime={1}&inuId=",
-                textBox1.Text,
+                FarmKey,
                 UnixStamp()
                 );
             StringBuilder sbHtml = new StringBuilder();
@@ -258,7 +284,9 @@ namespace Natsuhime.Farmooer
 
             //a = "[]";
             //aaa = (Dictionary<string, int>)JavaScriptConvert.DeserializeObject(a, typeof(Dictionary<string, int>));
-            BeginRefeshCurrentStatus();
+            //BeginRefeshCurrentStatus(null);
+
+            this.timer.Start();
         }
 
         private UInt32 UnixStamp()
@@ -278,6 +306,25 @@ namespace Natsuhime.Farmooer
 
             cs = aa as CurrentStatus;
             return cs;
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Hide();
+            this.notifyIcon1.Visible = true;
+            e.Cancel = true;
+        }
+
+        private void notifyIcon1_DoubleClick(object sender, EventArgs e)
+        {
+            this.Show();
+            this.notifyIcon1.Visible = false;
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.FormClosing -= new FormClosingEventHandler(MainForm_FormClosing);
+            this.Close();
         }
     }
 }

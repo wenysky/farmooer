@@ -40,7 +40,7 @@ namespace Natsuhime.Farmooer.Entities
         public Dictionary<string, int> n { get; set; }
         public int o { get; set; }
         /// <summary>
-        /// 灾害状态("p":{"1247125439":[3]}  应该是时间和id)
+        /// 灾害状态("p":{"1247125439":[3]}  应该是时间和id:1长虫;2长草;3干旱)
         /// </summary>
         public Dictionary<string, int[]> p { get; set; }
         /// <summary>
