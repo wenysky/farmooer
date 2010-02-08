@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farmooer", "Farmooer\Farmooer.csproj", "{966A94FA-BCE7-4EE4-AC15-AF76191A58E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeepinSummer", "..\DeepinSummer\trunk\DeepinSummer\DeepinSummer.csproj", "{67268E9E-AA3B-4D9E-956A-158922DA6B79}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeepinSummer", "..\..\DeepinSummer\trunk\DeepinSummer\DeepinSummer.csproj", "{67268E9E-AA3B-4D9E-956A-158922DA6B79}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
